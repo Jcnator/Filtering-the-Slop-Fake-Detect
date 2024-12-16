@@ -171,26 +171,26 @@ def predict_single_image(model, classifier, image_path, opt):
     ])
 
     
-    # with torch.no_grad():
-    y_pred = []
-    image = transform(Image.open(image_path).convert("RGB"))
-    in_tens = image.unsqueeze(0).cuda()
-    feats = model(in_tens)
-    pred = classifier(feats)
-    pred = classifier.get_validation_y_pred(pred.detach())
-    #print(pred)
-    y_pred.extend(pred)
-        
-    if opt.classifier == "SVM":
-        if y_pred[0] == 0:
-           print("Real!")
+    with torch.no_grad():
+        y_pred = []
+        image = transform(Image.open(image_path).convert("RGB"))
+        in_tens = image.unsqueeze(0).cuda()
+        feats = model(in_tens)
+        pred = classifier(feats)
+        pred = classifier.get_validation_y_pred(pred.detach())
+        #print(pred)
+        y_pred.extend(pred)
+            
+        if opt.classifier == "SVM":
+            if y_pred[0] == 0:
+                print("Real!")
+            else:
+                print("Fake!")
         else:
-           print("Fake!")
-    else:
-        if y_pred[0] < 0.5:
-           print("Real!")
-        else:
-           print("Fake!")
+            if y_pred[0] < 0.5:
+                print("Real!")
+            else:
+                print("Fake!")
        
 
 
