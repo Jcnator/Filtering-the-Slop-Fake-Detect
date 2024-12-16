@@ -1,0 +1,6 @@
+/datasets
+/resources
+/result
+*.pyc 
+**/*.pyc
+
