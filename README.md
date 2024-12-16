@@ -1,12 +1,14 @@
 # **Filtering the Slop: Detecting AI Images and their Features**
 
-Jiarui Chen	Murali Krishtna J	Navarro Jose
+Jiarui Chen
+Murali Krishtna J
+Navarro Jose
 
 ## Table of Contents
 
 1. [Overview](#Overview)
 2. [Installation](#Installtion)
-3. [How to run](#How to run)
+3. [Running](#Running)
 4. [Acknowledgement](#Acknowledgement)
 
 ## Overview
