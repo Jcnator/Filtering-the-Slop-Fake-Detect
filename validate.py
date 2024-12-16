@@ -114,7 +114,7 @@ def calculate_acc_classification(y_true, y_pred):
     return r_acc, f_acc, acc  
 
 
-def validate(model, classfier, loader, opt, find_thres=False):
+def validate(model, classifier, loader, opt, find_thres=False):
 
     with torch.no_grad():
         y_true, y_pred = [], []
@@ -127,8 +127,8 @@ def validate(model, classfier, loader, opt, find_thres=False):
             count = count + 1
             in_tens = img.cuda()
             feats = model(in_tens)
-            pred = classfier(feats)
-            pred = classfier.get_validation_y_pred(pred.detach())
+            pred = classifier(feats)
+            pred = classifier.get_validation_y_pred(pred.detach())
             #print(pred)
             y_pred.extend(pred)
             y_true.extend(label.flatten().tolist())
@@ -160,8 +160,7 @@ def validate(model, classfier, loader, opt, find_thres=False):
         return ap, r_acc0, f_acc0, acc0, r_acc1, f_acc1, acc1, best_thres
 
 
-
-def predict_single_image(model, classifier, image_path):
+def predict_single_image(model, classifier, image_path, opt):
     stat_from = "imagenet" if opt.arch.lower().startswith("imagenet") else "clip"
 
     transform = transforms.Compose([
@@ -176,21 +175,24 @@ def predict_single_image(model, classifier, image_path):
     y_pred = []
     image = transform(Image.open(image_path).convert("RGB"))
     in_tens = image.unsqueeze(0).cuda()
-    # feats, unprojected_feats, projected_feats  = model(in_tens)
-    unprojected_feats  = model(in_tens)
-    pred = classifier(unprojected_feats)
-    y_pred.extend(pred.sigmoid().flatten().tolist())
+    feats = model(in_tens)
+    pred = classifier(feats)
+    pred = classifier.get_validation_y_pred(pred.detach())
+    #print(pred)
+    y_pred.extend(pred)
         
-    image_name = os.path.splitext(os.path.basename(image_path))[0] + '_CAMed'
-    image_dir = os.path.dirname(image_path)
-    cam.generate_CAM(model, unprojected_feats, image, image_name, image_dir)
-
-    best_thres = 0.077
-    y_pred = np.array(y_pred)
-    if(y_pred[0] < best_thres):
-        print("Real!", y_pred[0])
+    if opt.classifier == "SVM":
+        if y_pred[0] == 0:
+           print("Real!")
+        else:
+           print("Fake!")
     else:
-        print("Fake!", y_pred[0])
+        if y_pred[0] < 0.5:
+           print("Real!")
+        else:
+           print("Fake!")
+       
+
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = # 
 
