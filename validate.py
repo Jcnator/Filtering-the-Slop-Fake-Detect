@@ -357,7 +357,7 @@ if __name__ == '__main__':
             classfier_dict = torch.load('./saved_models/CLIP_SVM.pth', weights_only=True)
         elif opt.arch == 'DINO:vit_b_16':
             classifier = SVM(768,2)
-            classfier_dict = torch.load('./saved_models/DINO_SVM_Augmented_2.pth', weights_only=True)
+            classfier_dict = torch.load('./saved_models/DINO_SVM.pth', weights_only=True)
 
     elif(opt.classifier == 'Linear'):
         model.project_feats = True 
