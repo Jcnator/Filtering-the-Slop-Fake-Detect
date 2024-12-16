@@ -12,7 +12,7 @@ from PIL import Image
 import pickle
 from io import BytesIO
 from copy import deepcopy
-from dataset_paths import DATASET_PATHS
+# from dataset_paths import DATASET_PATHS
 from dataset_reduced_paths import REDUCED_PATHS
 from scipy.ndimage.filters import gaussian_filter
 import cv2
