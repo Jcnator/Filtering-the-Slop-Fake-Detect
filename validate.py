@@ -27,7 +27,7 @@ from scipy.ndimage import gaussian_filter
 import time
 
 import patcher.cam as cam
-# import patcher.grad_cam as grad_cam
+import patcher.grad_cam as grad_cam
 import cv2
 
 from train import SVM, LinearProbe
@@ -371,9 +371,9 @@ if __name__ == '__main__':
     classifier.eval()
     classifier.cuda()
     print("Classfier loaded...")
-
+    print(opt)
     if(opt.image_path is not None):
-        predict_single_image(model, classifier, opt.image_path)        
+        predict_single_image(model, classifier, opt.image_path, opt)        
     else:
 
         if (opt.real_path == None) or (opt.fake_path == None):
