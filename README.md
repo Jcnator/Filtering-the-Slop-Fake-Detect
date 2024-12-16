@@ -60,6 +60,10 @@ Navarro Jose
 
 ## How to run
 
+You can run the repo for a single image test - 
+
+bash run.sh SINGLE_IMAGE
+
 ## Acknowledgement
 
 ​	This project is based on [*Detecting fake images*](https://utkarshojha.github.io/universal-fake-detection/) project of *Utkarsh Ojha*, *Yuheng Li* and *Yong Jae Lee*. 

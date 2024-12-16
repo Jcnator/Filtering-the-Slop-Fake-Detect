@@ -371,7 +371,6 @@ if __name__ == '__main__':
     classifier.eval()
     classifier.cuda()
     print("Classfier loaded...")
-    print(opt)
     if(opt.image_path is not None):
         predict_single_image(model, classifier, opt.image_path, opt)        
     else:
