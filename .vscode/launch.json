@@ -14,8 +14,8 @@
             "args": [
                 "--arch=CLIP:ViT-L/14",
                 "--classifier=SVM",
-                "--result_folder=rst",
-                "--image_path=data/single_shot_testing/jesus_fake.png"
+                "--result_folder=single_image_results",
+                "--image_path=data/single_image_testing/will-smith-fake.jpg"
             ]
         }
     ]

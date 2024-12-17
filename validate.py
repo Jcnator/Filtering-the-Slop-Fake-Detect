@@ -52,7 +52,7 @@ STD = {
 }
 
 
-
+CAM_OUTPUT_DIR = 'cam/'
 
 
 def find_best_threshold(y_true, y_pred):
@@ -170,29 +170,52 @@ def predict_single_image(model, classifier, image_path, opt):
         transforms.Normalize( mean=MEAN[stat_from], std=STD[stat_from] ),
     ])
 
-    
-    with torch.no_grad():
-        y_pred = []
-        image = transform(Image.open(image_path).convert("RGB"))
-        in_tens = image.unsqueeze(0).cuda()
-        feats = model(in_tens)
-        pred = classifier(feats)
-        pred = classifier.get_validation_y_pred(pred.detach())
-        #print(pred)
-        y_pred.extend(pred)
-            
-        if opt.classifier == "SVM":
-            if y_pred[0] == 0:
-                print("Real!")
-            else:
-                print("Fake!")
+    # Removing torch.no_grad for CAM.
+    # with torch.no_grad():
+    y_pred = []
+    image = transform(Image.open(image_path).convert("RGB"))
+    in_tens = image.unsqueeze(0).cuda()
+    feats = model(in_tens)
+    pred = classifier(feats)
+    pred = classifier.get_validation_y_pred(pred.detach())
+    y_pred.extend(pred)
+        
+    if opt.classifier == "SVM":
+        if y_pred[0] == 0:
+            print("Real!")
         else:
-            if y_pred[0] < 0.5:
-                print("Real!")
-            else:
-                print("Fake!")
-       
+            print("Fake!")
+    else:
+        if y_pred[0] < 0.5:
+            print("Real!")
+        else:
+            print("Fake!")
+    
+    grad_cam_fake, _ = grad_cam.get_cam_visualization_and_output(
+        torch.nn.Sequential(model, classifier),
+        [model.model.visual.conv1],
+        in_tens,
+        image.permute(1,2,0).cpu().numpy()/255.0,
+        1
+    )
 
+    grad_cam_real, _ = grad_cam.get_cam_visualization_and_output(
+        torch.nn.Sequential(model, classifier),
+        [model.model.visual.conv1],
+        in_tens,
+        image.permute(1,2,0).cpu().numpy()/255.0,
+        0
+    )
+
+    image_dir = opt.result_folder
+
+    image_name = os.path.splitext(os.path.basename(image_path))[0]
+
+
+    cv2.imwrite(os.path.join(image_dir, CAM_OUTPUT_DIR, image_name +"_fake_heatmap.png"),cv2.cvtColor(grad_cam_fake, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(os.path.join(image_dir, CAM_OUTPUT_DIR, image_name +"_real_heatmap.png"),cv2.cvtColor(grad_cam_real, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(os.path.join(image_dir, CAM_OUTPUT_DIR, image_name +"_base.png"),cv2.cvtColor(np.array(Image.open(image_path)), cv2.COLOR_RGB2BGR))
+    
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = # 
 
@@ -340,9 +363,12 @@ if __name__ == '__main__':
     opt = parser.parse_args()
 
     
-    if os.path.exists(opt.result_folder):
+    if (os.path.exists(opt.result_folder) and (not opt.image_path)):
         shutil.rmtree(opt.result_folder)
-    os.makedirs(opt.result_folder)
+    
+    if(not os.path.exists(os.path.join(opt.result_folder, CAM_OUTPUT_DIR))):
+        os.makedirs(os.path.join(opt.result_folder, CAM_OUTPUT_DIR))
+
 
     model = get_model(opt.arch)
     #state_dict = torch.load(opt.ckpt, map_location='cpu')

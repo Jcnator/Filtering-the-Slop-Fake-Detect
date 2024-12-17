@@ -64,6 +64,12 @@ You can run the repo for a single image test -
 
 bash run.sh SINGLE_IMAGE
 
+You can also provide the base model/classifier like -
+- bash run.sh SINGLE_IMAGE DINO:vit_b_16 SVM
+- bash run.sh SINGLE_IMAGE CLIP:ViT-L/14 Linear
+
+For SINGLE_IMAGE, you'll find the results in the singe_image_results folder. Please note that, as mentioned in the report, the GRAD CAM highlight does not *always* produce human-intuitive heatmaps
+
 ## Acknowledgement
 
 ​	This project is based on [*Detecting fake images*](https://utkarshojha.github.io/universal-fake-detection/) project of *Utkarsh Ojha*, *Yuheng Li* and *Yong Jae Lee*. 

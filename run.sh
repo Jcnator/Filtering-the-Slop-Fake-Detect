@@ -20,22 +20,32 @@ CLASSIFIER=${3:-"SVM"}
 case "$MODE" in
     SINGLE_IMAGE)
         echo "Processing a single image..."
+        
+        RESULTS_FOLDER=${4:-"single_image_results"}
+
+        rm -rf $RESULTS_FOLDER
+        rm -rf data/single_image_testing/*
+
         mkdir -p data/single_image_testing/
 
-        wget -P data/single_image_testing/ "https://i.ibb.co/z7bTQd4/will-smith-fake.jpg"
+        wget -O data/single_image_testing/will-smith-fake.jpg "https://i.ibb.co/z7bTQd4/will-smith-fake.jpg"
 
-        wget -P data/single_image_testing/ "https://i.ibb.co/xLGB6fp/dude-real.png"
+        wget -O "data/single_image_testing/will-smith-real.png" "https://cdn.mos.cms.futurecdn.net/p36cKZ9Tchhw8hFNw5G5h6.jpg"
 
         printf '%*s\n' "$TERMINAL_WIDTH" '' | tr ' ' '-'
 
         echo "RUNNING FOR FAKE IMAGE"
 
-        python3 validate.py --arch="$ARCH" --classifier="$CLASSIFIER" --result_folder=results --image_path=data/single_image_testing/will-smith-fake.jpg
+        echo "python3 validate.py --arch="$ARCH" --classifier="$CLASSIFIER" --result_folder=results --image_path=data/single_image_testing/will-smith-fake.jpg"
+
+        python3 validate.py --arch="$ARCH" --classifier="$CLASSIFIER" --result_folder=$RESULTS_FOLDER --image_path=data/single_image_testing/will-smith-fake.jpg
+
 
         printf '%*s\n' "$TERMINAL_WIDTH" '' | tr ' ' '-'
         echo "RUNNING FOR REAL IMAGE"
 
-        python3 validate.py --arch="$ARCH" --classifier="$CLASSIFIER" --result_folder=results --image_path=data/single_image_testing/dude-real.png
+        echo "python3 validate.py --arch="$ARCH" --classifier="$CLASSIFIER" --result_folder=$RESULTS_FOLDER --image_path=data/single_image_testing/will-smith-real.jpg"
+        python3 validate.py --arch="$ARCH" --classifier="$CLASSIFIER" --result_folder=$RESULTS_FOLDER --image_path=data/single_image_testing/will-smith-real.png
         ;;
     BATCH_VAL)
         echo "TBD, as we'll need to pull large data and do some moving around."
