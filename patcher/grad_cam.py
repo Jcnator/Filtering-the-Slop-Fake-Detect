@@ -58,10 +58,10 @@ def get_cam_visualization_and_output(model, target_layers, input_tensor, image, 
         model_outputs = cam.outputs
         visualization = (visualization*255).astype(np.uint8)
         
-        cv2.imshow(
-            "Grad-CAM Visualization", cv2.cvtColor(visualization, cv2.COLOR_RGB2BGR)
-        )
-        cv2.waitKey(0)  # Wait for a key press to close the window
-        cv2.destroyAllWindows()
+        # cv2.imshow(
+        #     "Grad-CAM Visualization", cv2.cvtColor(visualization, cv2.COLOR_RGB2BGR)
+        # )
+        # cv2.waitKey(0)  # Wait for a key press to close the window
+        # cv2.destroyAllWindows()
 
         return visualization, model_outputs
